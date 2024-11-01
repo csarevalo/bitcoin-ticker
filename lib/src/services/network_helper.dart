@@ -4,6 +4,8 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 const String _apiKey = '466291F6-86AD-4ADE-8DAD-39B743022341';
+const String _sampleResponse =
+    'https://raw.githubusercontent.com/csarevalo/bitcoin_ticker/refs/heads/main/lib/src/constants/sample_coinapi_response.json';
 
 class NetworkHelper {
   final String baseURL;
@@ -22,7 +24,7 @@ class NetworkHelper {
     String assetIdBase,
   ) async {
     String url = '$baseURL/$version/$request/$assetIdBase?apiKey=$_apiKey';
-
+    // String url = _sampleResponse;
     http.Response response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
