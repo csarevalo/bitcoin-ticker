@@ -8,6 +8,12 @@ class CryptoProvider extends ChangeNotifier {
     version: 'v1',
     request: 'exchangerate',
   );
+  String _selectedCurrency = '';
+  String get selectedCurrency => _selectedCurrency;
+  void selectNewCurrency(String newCurrency) {
+    _selectedCurrency = newCurrency;
+    notifyListeners();
+  }
 
   Future<void> init() async {}
 
@@ -28,7 +34,6 @@ class CryptoProvider extends ChangeNotifier {
     //   assetIdBase: cryptoTicker,
     //   assetIdQuote: quote,
     // );
-    // debugPrint(data['rates'].toString());
     if (data == null) {
       // If no data (because of error or other), use default GitHub data
       data = await _networkHelper.getAllCurrentRates(cryptoTicker);

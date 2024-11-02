@@ -27,13 +27,21 @@ class CryptoCard extends StatelessWidget {
             quote: currency,
           ),
           builder: (context, snapshot) {
-            String coinRate = '???';
+            String coinRate = 'loading';
             if (snapshot.hasData) {
               coinRate = snapshot.data!.rate.toStringAsFixed(2);
+              return Text(
+                '1 ${tickerSymbol.toUpperCase()} = $coinRate ${currency.toUpperCase()}',
+                textAlign: TextAlign.center,
+              );
             }
-            return Text(
-              '1 ${tickerSymbol.toUpperCase()} = $coinRate ${currency.toUpperCase()}',
-              textAlign: TextAlign.center,
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('1 ${tickerSymbol.toUpperCase()} =    '),
+                const CircularProgressIndicator.adaptive(),
+                Text('    $currency'),
+              ],
             );
           },
         ),
