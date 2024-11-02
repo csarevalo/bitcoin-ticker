@@ -19,14 +19,39 @@ class CryptoProvider extends ChangeNotifier {
     /// Requested exchange rate quote asset identifier
     required String quote,
   }) async {
-    double rate = await _networkHelper.getSpecificCurrentRate(
-      assetIdBase: cryptoTicker,
-      assetIdQuote: quote,
-    );
+    dynamic data;
+    double rate;
+
+    // Try getting crypto data from coin api
+    data = null;
+    // data = await _networkHelper.getSpecificCurrentRate(
+    //   assetIdBase: cryptoTicker,
+    //   assetIdQuote: quote,
+    // );
+    // debugPrint(data['rates'].toString());
+    if (data == null) {
+      // If no data (because of error or other), use default GitHub data
+      data = await _networkHelper.getAllCurrentRates(cryptoTicker);
+      int index = data['rates'].indexWhere((quoteResponse) {
+        String assetIdQuote = quoteResponse['asset_id_quote'].toString();
+        return assetIdQuote == quote.toUpperCase();
+      });
+      rate = data['rates'][index]['rate'];
+    } else {
+      rate = data['rate'];
+    }
     return CoinData(
       name: 'Bitcoin',
       symbol: cryptoTicker,
       rate: rate,
+    );
+  }
+
+  CoinData coinDataError(String msg) {
+    return CoinData(
+      name: 'Error',
+      symbol: 'Trouble getting ticker rate',
+      rate: 0,
     );
   }
 }

@@ -1,3 +1,4 @@
+import 'package:bitcoin_ticker/src/widgets/crypto_card.dart';
 import 'package:bitcoin_ticker/src/widgets/select_currency_button.dart';
 import 'package:flutter/material.dart';
 
@@ -28,18 +29,9 @@ class HomeScreen extends StatelessWidget {
         body: const Column(
           children: [
             SelectCurrencyButton(),
-            Card(
-              margin: EdgeInsets.symmetric(
-                horizontal: 24.0,
-                vertical: 16.0,
-              ),
-              child: ListTile(
-                titleAlignment: ListTileTitleAlignment.center, //vertical
-                title: Text(
-                  '1 BTC = ? USD',
-                  textAlign: TextAlign.center,
-                ),
-              ),
+            CryptoCard(
+              tickerSymbol: 'BTC',
+              currency: 'USD',
             ),
           ],
         ),
