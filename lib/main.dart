@@ -1,5 +1,7 @@
+import 'package:bitcoin_ticker/src/provider/crypto_provider.dart';
 import 'package:bitcoin_ticker/src/screens/home_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   runApp(const BitcoinTickerApp());
@@ -10,9 +12,12 @@ class BitcoinTickerApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData.dark(),
-      home: const HomeScreen(),
+    return ChangeNotifierProvider(
+      create: (BuildContext context) => CryptoProvider(),
+      child: MaterialApp(
+        theme: ThemeData.dark(),
+        home: const HomeScreen(),
+      ),
     );
   }
 }

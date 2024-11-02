@@ -14,7 +14,7 @@ class NetworkHelper {
 
   NetworkHelper({
     required this.baseURL,
-    required this.version,
+    this.version = '',
     required this.request,
   });
 
@@ -23,8 +23,7 @@ class NetworkHelper {
     /// Requested exchange rates base asset identifier
     String assetIdBase,
   ) async {
-    String url = '$baseURL/$version/$request/$assetIdBase?apiKey=$_apiKey';
-    // String url = _sampleResponse;
+    String url = _getUrl(newRequest: false);
     http.Response response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
@@ -35,16 +34,14 @@ class NetworkHelper {
   }
 
   /// Retrieves the exchange rate for a specific base and quote asset at a given time or the current rate.
-  Future<dynamic> getSpecificCurrentRate(
+  Future<dynamic> getSpecificCurrentRate({
     /// Requested exchange rates base asset identifier
-    String assetIdBase,
+    required String assetIdBase,
 
     /// Requested exchange rate quote asset identifier
-    String assetIdQuote,
-  ) async {
-    String url =
-        '$baseURL/$version/$request/$assetIdBase/$assetIdQuote?apiKey=$_apiKey';
-
+    required String assetIdQuote,
+  }) async {
+    String url = _getUrl(newRequest: false);
     http.Response response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
@@ -52,5 +49,18 @@ class NetworkHelper {
       debugPrint(response.statusCode.toString());
     }
     return null;
+  }
+
+  String _getUrl({
+    bool newRequest = false,
+    String assetIdBase = '',
+    String assetIdQuote = '',
+  }) {
+    if (newRequest) {
+      String ver = version.isEmpty ? '' : '$version/';
+      String quote = assetIdQuote.isEmpty ? '' : '/$assetIdQuote';
+      return '$baseURL/$ver$request/$assetIdBase$quote?apiKey=$_apiKey';
+    }
+    return _sampleResponse;
   }
 }
