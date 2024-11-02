@@ -4,8 +4,8 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 const String _apiKey = '466291F6-86AD-4ADE-8DAD-39B743022341';
-const String _btcSampleResponse =
-    'https://raw.githubusercontent.com/csarevalo/bitcoin_ticker/refs/heads/main/lib/src/constants/sample_coinapi_response.json';
+const String _sampleBaseUrl =
+    'https://raw.githubusercontent.com/csarevalo/bitcoin_ticker/refs/heads/main/lib/src/constants/';
 
 class NetworkHelper {
   final String baseURL;
@@ -23,7 +23,7 @@ class NetworkHelper {
     /// Requested exchange rates base asset identifier
     String assetIdBase,
   ) async {
-    String url = _getUrl(newRequest: false);
+    String url = _getUrl(newRequest: false, assetIdBase: assetIdBase);
     http.Response response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
@@ -41,7 +41,7 @@ class NetworkHelper {
     /// Requested exchange rate quote asset identifier
     required String assetIdQuote,
   }) async {
-    String url = _getUrl(newRequest: false);
+    String url = _getUrl(newRequest: false, assetIdBase: assetIdBase);
     http.Response response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
@@ -53,7 +53,7 @@ class NetworkHelper {
 
   String _getUrl({
     bool newRequest = false,
-    String assetIdBase = '',
+    required String assetIdBase,
     String assetIdQuote = '',
   }) {
     if (newRequest) {
@@ -61,6 +61,6 @@ class NetworkHelper {
       String quote = assetIdQuote.isEmpty ? '' : '/$assetIdQuote';
       return '$baseURL/$ver$request/$assetIdBase$quote?apiKey=$_apiKey';
     }
-    return _btcSampleResponse;
+    return '$_sampleBaseUrl${assetIdBase.toLowerCase()}_sample_coinapi_response.json';
   }
 }

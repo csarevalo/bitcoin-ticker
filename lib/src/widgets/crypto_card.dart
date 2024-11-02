@@ -15,10 +15,7 @@ class CryptoCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: const EdgeInsets.symmetric(
-        horizontal: 24.0,
-        vertical: 16.0,
-      ),
+      margin: const EdgeInsets.fromLTRB(24.0, 16.0, 24.0, 8.0),
       child: ListTile(
         titleAlignment: ListTileTitleAlignment.center, //vertical
         title: FutureBuilder(

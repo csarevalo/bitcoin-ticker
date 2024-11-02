@@ -19,17 +19,20 @@ const List<String> currenciesList = [
   'SEK',
   'SGD',
   'USD',
-  'ZAR'
+  'ZAR',
 ];
 
 const List<String> cryptoList = [
+  'BNB',
   'BTC',
   'ETH',
   'LTC',
+  'SOL',
+  'USDT',
 ];
 
 class CoinData {
-    final String name;
+  final String name;
   final String symbol;
   final double rate;
 

@@ -1,4 +1,5 @@
 import 'package:bitcoin_ticker/src/provider/crypto_provider.dart';
+import 'package:bitcoin_ticker/src/utils/coin_data.dart';
 import 'package:bitcoin_ticker/src/widgets/crypto_card.dart';
 import 'package:bitcoin_ticker/src/widgets/select_currency_button.dart';
 import 'package:flutter/material.dart';
@@ -32,23 +33,21 @@ class HomeScreen extends StatelessWidget {
         body: Column(
           children: [
             const SelectCurrencyButton(),
+            const SizedBox(height: 8.0),
             Selector<CryptoProvider, String>(
               selector: (_, p) => p.selectedCurrency,
               builder: (_, String currency, __) {
                 return Column(
                   mainAxisSize: MainAxisSize.min,
-                  children: [
-                    CryptoCard(
-                      tickerSymbol: 'BTC',
-                      currency: currency,
-                      cryptoProvider: cryptoProvider,
-                    ),
-                    // CryptoCard(
-                    //   tickerSymbol: 'ETH',
-                    //   currency: currency,
-                    //   cryptoProvider: cryptoProvider,
-                    // ),
-                  ],
+                  children: cryptoList
+                      .map<Widget>(
+                        (cryptoTicker) => CryptoCard(
+                          tickerSymbol: cryptoTicker,
+                          currency: currency,
+                          cryptoProvider: cryptoProvider,
+                        ),
+                      )
+                      .toList(),
                 );
               },
             ),
