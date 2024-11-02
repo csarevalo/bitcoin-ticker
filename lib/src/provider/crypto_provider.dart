@@ -8,14 +8,16 @@ class CryptoProvider extends ChangeNotifier {
     version: 'v1',
     request: 'exchangerate',
   );
-  String _selectedCurrency = '';
+  late String _selectedCurrency;
   String get selectedCurrency => _selectedCurrency;
   void selectNewCurrency(String newCurrency) {
     _selectedCurrency = newCurrency;
     notifyListeners();
   }
 
-  Future<void> init() async {}
+  Future<void> init() async {
+    _selectedCurrency = 'USD';
+  }
 
   /// Get Bitcoin exchange rate
   Future<CoinData> getCryptoRate({

@@ -1,6 +1,8 @@
+import 'package:bitcoin_ticker/src/provider/crypto_provider.dart';
 import 'package:bitcoin_ticker/src/widgets/crypto_card.dart';
 import 'package:bitcoin_ticker/src/widgets/select_currency_button.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({
@@ -9,6 +11,7 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cryptoProvider = context.read<CryptoProvider>();
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -26,12 +29,28 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
         ),
-        body: const Column(
+        body: Column(
           children: [
-            SelectCurrencyButton(),
-            CryptoCard(
-              tickerSymbol: 'BTC',
-              currency: 'USD',
+            const SelectCurrencyButton(),
+            Selector<CryptoProvider, String>(
+              selector: (_, p) => p.selectedCurrency,
+              builder: (_, String currency, __) {
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    CryptoCard(
+                      tickerSymbol: 'BTC',
+                      currency: currency,
+                      cryptoProvider: cryptoProvider,
+                    ),
+                    // CryptoCard(
+                    //   tickerSymbol: 'ETH',
+                    //   currency: currency,
+                    //   cryptoProvider: cryptoProvider,
+                    // ),
+                  ],
+                );
+              },
             ),
           ],
         ),

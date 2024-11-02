@@ -1,19 +1,19 @@
 import 'package:bitcoin_ticker/src/provider/crypto_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class CryptoCard extends StatelessWidget {
   const CryptoCard({
     super.key,
     required this.tickerSymbol,
     required this.currency,
+    required this.cryptoProvider,
   });
   final String tickerSymbol;
   final String currency;
+  final CryptoProvider cryptoProvider;
 
   @override
   Widget build(BuildContext context) {
-    final cryptoProvider = context.read<CryptoProvider>();
     return Card(
       margin: const EdgeInsets.symmetric(
         horizontal: 24.0,

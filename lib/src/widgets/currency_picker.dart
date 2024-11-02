@@ -6,11 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class CurrencyPicker extends StatefulWidget {
-  final String initialCurrency;
-
   const CurrencyPicker({
     super.key,
-    this.initialCurrency = 'USD',
   });
 
   @override
@@ -19,24 +16,26 @@ class CurrencyPicker extends StatefulWidget {
 
 class _CurrencyPickerState extends State<CurrencyPicker> {
   late String selectedCurrencyOnPicker;
+  late String initialCurrency;
+  late final CryptoProvider cryptoProvider;
 
   @override
   void initState() {
     super.initState();
-    selectedCurrencyOnPicker = widget.initialCurrency;
+    cryptoProvider = Provider.of<CryptoProvider>(context, listen: false);
+    selectedCurrencyOnPicker = cryptoProvider.selectedCurrency;
+    initialCurrency = selectedCurrencyOnPicker;
   }
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      // mainAxisAlignment: MainAxisAlignment.end,
       mainAxisSize: MainAxisSize.min,
-
       children: [
         CurrencyPickerHeader(
           onDone: () {
-            Provider.of<CryptoProvider>(context, listen: false)
-                .selectNewCurrency(selectedCurrencyOnPicker);
+            debugPrint(selectedCurrencyOnPicker);
+            cryptoProvider.selectNewCurrency(selectedCurrencyOnPicker);
             Navigator.pop(context);
           },
         ),
@@ -45,12 +44,11 @@ class _CurrencyPickerState extends State<CurrencyPicker> {
           child: Center(
             child: CupertinoPicker(
               scrollController: FixedExtentScrollController(
-                initialItem: currenciesList.indexOf(widget.initialCurrency),
+                initialItem: currenciesList.indexOf(initialCurrency),
               ),
               itemExtent: 32,
               onSelectedItemChanged: (itemIndex) {
                 selectedCurrencyOnPicker = currenciesList[itemIndex];
-                debugPrint(currenciesList[itemIndex]);
               },
               children: currenciesList.map<Text>((s) => Text(s)).toList(),
             ),
