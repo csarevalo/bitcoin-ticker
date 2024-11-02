@@ -23,12 +23,29 @@ class NetworkHelper {
     /// Requested exchange rates base asset identifier
     String assetIdBase,
   ) async {
-    String url = _getUrl(newRequest: false, assetIdBase: assetIdBase);
+    // Get CoinApi URL
+    String url = _getUrl(newRequest: true, assetIdBase: assetIdBase);
+    // Request CoinApi all current crypto exchange rates
     http.Response response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
+      // Good CoinApi response
       return jsonDecode(response.body);
     } else {
-      debugPrint(response.statusCode.toString());
+      // Bad CoinApi response
+      debugPrint('[CoinApi] Status: ${response.statusCode.toString()}');
+      debugPrint('[CoinApi] URL: $url');
+      // Get GitHub sample crypto url
+      url = _getUrl(newRequest: false, assetIdBase: assetIdBase);
+      // Request sample crypto data from repo
+      response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        // Good GitHub Response
+        return jsonDecode(response.body);
+      } else {
+        // Bad GitHub Response
+        debugPrint('[GitHub] Status: ${response.statusCode.toString()}');
+        debugPrint('[GitHub] URL: $url');
+      }
     }
     return null;
   }
@@ -41,11 +58,19 @@ class NetworkHelper {
     /// Requested exchange rate quote asset identifier
     required String assetIdQuote,
   }) async {
-    String url = _getUrl(newRequest: false, assetIdBase: assetIdBase);
+    // Get CoinApi url
+    String url = _getUrl(
+      newRequest: true,
+      assetIdBase: assetIdBase,
+      assetIdQuote: assetIdBase,
+    );
+    // Request CoinApi specific and current crypto rate
     http.Response response = await http.get(Uri.parse(url));
     if (response.statusCode == 200) {
+      // Good CoinApi response
       return jsonDecode(response.body);
     } else {
+      // Bad response
       debugPrint(response.statusCode.toString());
     }
     return null;
@@ -57,9 +82,11 @@ class NetworkHelper {
     String assetIdQuote = '',
   }) {
     if (newRequest) {
+      // Add version if not empty
       String ver = version.isEmpty ? '' : '$version/';
+      // Add desired currency quote if not empty
       String quote = assetIdQuote.isEmpty ? '' : '/$assetIdQuote';
-      return '$baseURL/$ver$request/$assetIdBase$quote?apiKey=$_apiKey';
+      return '$baseURL$ver$request/$assetIdBase$quote?apiKey=$_apiKey';
     }
     return '$_sampleBaseUrl${assetIdBase.toLowerCase()}_sample_coinapi_response.json';
   }

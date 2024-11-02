@@ -32,12 +32,10 @@ const List<String> cryptoList = [
 ];
 
 class CoinData {
-  final String name;
   final String symbol;
   final double rate;
 
   CoinData({
-    required this.name,
     required this.symbol,
     required this.rate,
   });

@@ -8,8 +8,16 @@ class CryptoProvider extends ChangeNotifier {
     version: 'v1',
     request: 'exchangerate',
   );
+
+  late List<dynamic> _allCryptoData;
+
+  /// Private selected currency
   late String _selectedCurrency;
+
+  /// Get selected currency from provider
   String get selectedCurrency => _selectedCurrency;
+
+  /// Select a new currency
   void selectNewCurrency(String newCurrency) {
     _selectedCurrency = newCurrency;
     notifyListeners();
@@ -17,6 +25,13 @@ class CryptoProvider extends ChangeNotifier {
 
   Future<void> init() async {
     _selectedCurrency = 'USD';
+    _allCryptoData = [];
+    dynamic data;
+    for (String cryptoTicker in cryptoList) {
+      // Get current rate from network helper (coin api)
+      data = await _networkHelper.getAllCurrentRates(cryptoTicker);
+      _allCryptoData.add(data);
+    }
   }
 
   /// Get Bitcoin exchange rate
@@ -29,36 +44,41 @@ class CryptoProvider extends ChangeNotifier {
   }) async {
     dynamic data;
     double rate;
+    int index;
 
-    // Try getting crypto data from coin api
-    data = null;
-    // data = await _networkHelper.getSpecificCurrentRate(
-    //   assetIdBase: cryptoTicker,
-    //   assetIdQuote: quote,
-    // );
-    if (data == null) {
-      // If no data (because of error or other), use default GitHub data
-      data = await _networkHelper.getAllCurrentRates(cryptoTicker);
-      int index = data['rates'].indexWhere((quoteResponse) {
-        String assetIdQuote = quoteResponse['asset_id_quote'].toString();
-        return assetIdQuote == quote.toUpperCase();
-      });
-      rate = data['rates'][index]['rate'];
+    // Get data from [_allCryptoData] stored in app
+    if (_allCryptoData.isNotEmpty) {
+      // Get index of relevant crypto data
+      index = _allCryptoData.indexWhere(
+        (cryptoData) => cryptoData['asset_id_base'] == cryptoTicker,
+      );
+      // Check if valid index, and get relevant crypto data
+      data = index != -1 ? _allCryptoData[index] : null;
     } else {
-      rate = data['rate'];
+      // Get current rate from network helper (coin apis)
+      data = await _networkHelper.getAllCurrentRates(cryptoTicker);
     }
-    return CoinData(
-      name: 'Bitcoin',
-      symbol: cryptoTicker,
-      rate: rate,
-    );
+    // Verify crypto data
+    if (data == null) return _coinDataError('Trouble getting crypto data');
+    // Get index of [quote] inside response
+    index = data['rates'].indexWhere((quoteResponse) {
+      String assetIdQuote = quoteResponse['asset_id_quote'].toString();
+      return assetIdQuote == quote.toUpperCase();
+    });
+    // Check if valid index (found currency exchange)
+    if (index != -1) {
+      // Get crypto rate exchange
+      rate = data['rates'][index]['rate'];
+      return CoinData(
+        symbol: cryptoTicker,
+        rate: rate,
+      );
+    } else {
+      return _coinDataError('Trouble getting crypto rate exchange');
+    }
   }
+}
 
-  CoinData coinDataError(String msg) {
-    return CoinData(
-      name: 'Error',
-      symbol: 'Trouble getting ticker rate',
-      rate: 0,
-    );
-  }
+CoinData _coinDataError(String msg) {
+  return CoinData(symbol: msg, rate: 0);
 }
