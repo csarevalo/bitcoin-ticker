@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 
 const String _apiKey = '466291F6-86AD-4ADE-8DAD-39B743022341';
 const String _sampleBaseUrl =
-    'https://raw.githubusercontent.com/csarevalo/bitcoin_ticker/refs/heads/main/lib/src/constants/';
+    'https://raw.githubusercontent.com/csarevalo/bitcoin-ticker/refs/heads/main/lib/src/constants/';
 
 class NetworkHelper {
   final String baseURL;
