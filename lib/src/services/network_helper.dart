@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 const String _apiKey = '466291F6-86AD-4ADE-8DAD-39B743022341';
-const String _sampleResponse =
+const String _btcSampleResponse =
     'https://raw.githubusercontent.com/csarevalo/bitcoin_ticker/refs/heads/main/lib/src/constants/sample_coinapi_response.json';
 
 class NetworkHelper {
@@ -61,6 +61,6 @@ class NetworkHelper {
       String quote = assetIdQuote.isEmpty ? '' : '/$assetIdQuote';
       return '$baseURL/$ver$request/$assetIdBase$quote?apiKey=$_apiKey';
     }
-    return _sampleResponse;
+    return _btcSampleResponse;
   }
 }
